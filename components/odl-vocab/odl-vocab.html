@@ -1,0 +1,126 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../hax-body-behaviors/hax-body-behaviors.html">
+<link rel="import" href="../schema-behaviors/schema-behaviors.html">
+<link rel="import" href="odl-dialog.html">
+
+
+
+<!--
+`odl-vocab`
+A webcomponent for highlighting important vocabulary terms.
+@demo demo/index.html
+-->
+
+<dom-module id="odl-vocab">
+  <template>
+    <style>
+      :host {
+        display: inline-flex;
+      }
+      paper-button {
+        text-transform: none;
+        padding: 0;
+        margin: 0;
+        border-bottom: 1px dashed gray;
+        position: relative;
+        top: 3px;
+      }
+    </style>
+
+    <odl-dialog opened="{{opened}}">
+      <slot></slot>
+    </odl-dialog>
+
+    <div class="word">
+      <paper-button id="wordbtn" noink>[[word]]</paper-button>
+    </div>
+
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'odl-vocab',
+      behaviors: [
+        HAXBehaviors.PropertiesBehaviors,
+        SchemaBehaviors.Schema,
+      ],
+      properties: {
+        word: {
+          type: String,
+          value: '',
+          reflectToAttribute: true,
+        },
+        opened: {
+          type: Boolean,
+          value: false,
+        }
+      },
+      ready: function () {
+        this.$.wordbtn.addEventListener("click", (e) => {
+          this.opened = !this.opened
+        });
+      },
+      /**
+       * Attached.
+       */
+      attached: function() {
+        // Establish hax properties if they exist
+        let props = {
+          'canScale': false,
+          'canPosition': false,
+          'canEditSource': true,
+          'gizmo': {
+            'title': 'ODL-Vocab',
+            'description': 'Vocabulary word',
+            'icon': 'image:details',
+            'color': 'red',
+            'groups': ['Vocab'],
+            'handles': [
+              {
+                'type': 'inline',
+                'text': 'word',
+              }
+            ],
+            'meta': {
+              'author': 'EberlyODL'
+            }
+          },
+          'settings': {
+            'quick': [
+              {
+                'property': 'word',
+                'title': 'Word',
+                'description': 'The word to make clickable for more detail.',
+                'inputMethod': 'textfield',
+                'icon': 'editor:title',
+                'required': true,
+              },
+            ],
+            'configure': [
+              {
+                'property': 'word',
+                'title': 'Word',
+                'description': 'The word to make clickable for more detail.',
+                'inputMethod': 'textfield',
+                'icon': 'editor:title',
+                'required': true,
+              },
+              {
+                'slot': '',
+                'title': 'Contents',
+                'description': 'Contents to display in the pop up.',
+                'inputMethod': 'code-editor',
+                'required': true,
+              },
+            ],
+            'advanced': []
+          }
+        };
+        this.setHaxProperties(props);
+      },
+    });
+  </script>
+</dom-module>
